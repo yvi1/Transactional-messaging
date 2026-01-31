@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AmplicodePersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit moduleName="transactional-kafka-jdbc-sync.order-service.main" name="Default">
+        <packages>
+          <package value="ru.yvi.transactional_kafka_jdbc_sync.order_service" />
+        </packages>
+      </persistence-unit>
+    </persistence-units>
+  </component>
+</project>
