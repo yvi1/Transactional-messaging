@@ -1,3 +1,0 @@
-spring:
-  application:
-    name: transactional-kafka-jdbc-sync
