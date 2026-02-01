@@ -29,7 +29,7 @@ dependencies {
 	//implementation("org.springframework.boot:spring-boot-starter-kafka")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	compileOnly("org.projectlombok:lombok")
-	//runtimeOnly("org.postgresql:postgresql")
+	runtimeOnly("org.postgresql:postgresql")
 	annotationProcessor("org.projectlombok:lombok")
 
 	// Test
@@ -45,6 +45,7 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 	annotationProcessor("org.mapstruct:mapstruct-processor:${versions["mapstructVersion"]}")
 	annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 }
 
 tasks.withType<Test> {

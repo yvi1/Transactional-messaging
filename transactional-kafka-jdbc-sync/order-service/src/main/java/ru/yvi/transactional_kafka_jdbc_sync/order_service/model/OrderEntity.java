@@ -2,6 +2,7 @@ package ru.yvi.transactional_kafka_jdbc_sync.order_service.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
@@ -11,19 +12,13 @@ import java.util.UUID;
 
 import static ru.yvi.transactional_kafka_jdbc_sync.order_service.util.HibernateUtils.getEffectiveClass;
 
-
-@Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Data
 @Entity
 @Table(name = "orders")
-public class OrderEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
-    private UUID id;
+public class OrderEntity extends BaseEntity {
 
     @Column(name = "customer_id")
     private UUID customerId;
@@ -38,16 +33,17 @@ public class OrderEntity {
     @Column(name = "order_status", nullable = false)
     private OrderStatus orderStatus;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @Builder.Default
     private Set<CartEntity> cartEntities = new LinkedHashSet<>();
-
 
     @Override
     public boolean equals(Object o) {
         return this == o || o instanceof OrderEntity order
                 && getEffectiveClass(this) == getEffectiveClass(order)
-                && getId() != null
-                && Objects.equals(getId(), order.getId());
+                && this.getId() != null
+                && Objects.equals(this.getId(), order.getId());
     }
 
     @Override
