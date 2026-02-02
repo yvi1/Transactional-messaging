@@ -31,12 +31,12 @@ public class BaseEntity {
     @PrePersist
     protected void onCreate() {
         Instant now = Instant.now();
-        createdAt = now;
-        updatedAt = now;
+        this.createdAt = now;
+        this.updatedAt = now;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = Instant.now();
+        this.updatedAt = Instant.now();
     }
 }
