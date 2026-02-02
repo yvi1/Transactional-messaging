@@ -8,7 +8,8 @@ import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.OrderResponse
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING,
-        uses = CartMapper.class
+        uses = CartMapper.class,
+        injectionStrategy =  InjectionStrategy.CONSTRUCTOR
 )
 public interface OrderMapper {
 

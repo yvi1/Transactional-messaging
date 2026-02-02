@@ -18,6 +18,10 @@ import static ru.yvi.transactional_kafka_jdbc_sync.order_service.util.HibernateU
 @Data
 @Entity
 @Table(name = "orders")
+@NamedEntityGraph(
+        name = "order_with_cart",
+        attributeNodes = { @NamedAttributeNode("cartEntities")}
+)
 public class OrderEntity extends BaseEntity {
 
     @Column(name = "customer_id")
