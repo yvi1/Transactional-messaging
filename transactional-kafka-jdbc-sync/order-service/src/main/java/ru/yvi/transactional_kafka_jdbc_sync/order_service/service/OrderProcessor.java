@@ -15,6 +15,7 @@ import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.mapper.OrderMappe
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -49,6 +50,13 @@ public class OrderProcessor {
                     log.error("Entity with id `{}` not found", id);
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id));
                 });
+    }
+
+    public List<OrderResponseDTO> getAll() {
+        List<OrderEntity> orderEntityList = orderRepository.findAllByEntityGraph();
+        return orderEntityList.stream()
+                .map(orderMapper::toResponseDTO)
+                .toList();
     }
 
     private void calculateTotalAmount(OrderEntity entity) {
