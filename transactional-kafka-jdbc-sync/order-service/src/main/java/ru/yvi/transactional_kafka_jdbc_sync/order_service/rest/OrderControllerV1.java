@@ -29,7 +29,7 @@ public class OrderControllerV1 {
     }
 
     @GetMapping("/client/{id}")
-    public ResponseEntity<List<OrderResponseDTO>> getAllOrdersByClientId(@PathVariable("id") Long id) {
+    public ResponseEntity<List<OrderResponseDTO>> getAllOrdersByCustomerId(@PathVariable("id") Long id) {
         return ResponseEntity.ok(orderProcessor.getAllById(id));
     }
 }
