@@ -51,7 +51,7 @@ public class OrderProcessor {
         return orderMapper.toResponseDTO(orderEntity);
     }
 
-    public List<OrderResponseDTO> getAllById(long customerId) {
+    public List<OrderResponseDTO> getAllById(UUID customerId) {
         List<OrderEntity> orderEntityList = orderRepository.findAllByCustomerId(customerId);
         return orderEntityList.stream()
                 .map(orderMapper::toResponseDTO)

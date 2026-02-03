@@ -12,8 +12,7 @@ import java.util.UUID;
 
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, UUID> {
-
     @Query("SELECT o FROM OrderEntity o WHERE o.customerId = :customerId")
     @EntityGraph("order_with_cart")
-    List<OrderEntity> findAllByCustomerId(@Param("customer_id") Long customerId);
+    List<OrderEntity> findAllByCustomerId(@Param("customer_id") UUID customerId);
 }
