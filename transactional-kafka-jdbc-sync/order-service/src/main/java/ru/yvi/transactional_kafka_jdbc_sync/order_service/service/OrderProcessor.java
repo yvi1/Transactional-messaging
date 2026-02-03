@@ -2,15 +2,14 @@ package ru.yvi.transactional_kafka_jdbc_sync.order_service.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
+import ru.yvi.transactional_kafka_jdbc_sync.order_service.exception.OrderNotFoundException;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderEntity;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderStatus;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.repository.OrderRepository;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.CreateOrderRequestDTO;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.OrderResponseDTO;
+import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.request.CreateOrderRequestDTO;
+import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.response.OrderResponseDTO;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.mapper.OrderMapper;
 
 import java.math.BigDecimal;
@@ -43,17 +42,17 @@ public class OrderProcessor {
         return orderMapper.toResponseDTO(saved);
     }
 
-    public OrderEntity getOrderOrThrow(UUID id) {
-        var orderEntityOptional = orderRepository.findById(id);
-        return orderEntityOptional
+    public OrderResponseDTO getOrderOrThrow(UUID id) {
+        var orderEntity = orderRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Entity with id `{}` not found", id);
-                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Entity with id `%s` not found".formatted(id));
+                    return new OrderNotFoundException("Order with id=[`%s`] not found".formatted(id));
                 });
+        return orderMapper.toResponseDTO(orderEntity);
     }
 
-    public List<OrderResponseDTO> getAll() {
-        List<OrderEntity> orderEntityList = orderRepository.findAllByEntityGraph();
+    public List<OrderResponseDTO> getAllById(long clientId) {
+        List<OrderEntity> orderEntityList = orderRepository.findAllByClientId(clientId);
         return orderEntityList.stream()
                 .map(orderMapper::toResponseDTO)
                 .toList();

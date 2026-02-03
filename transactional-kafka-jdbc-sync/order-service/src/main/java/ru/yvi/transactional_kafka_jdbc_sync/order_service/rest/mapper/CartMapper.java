@@ -4,8 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.CartEntity;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.CartResponseDTO;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.CreateCartRequestDTO;
+import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.response.CartResponseDTO;
+import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.request.CreateCartRequestDTO;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface CartMapper {

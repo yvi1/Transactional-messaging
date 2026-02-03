@@ -1,11 +1,11 @@
 package ru.yvi.transactional_kafka_jdbc_sync.order_service.rest;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderEntity;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.CreateOrderRequestDTO;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.OrderResponseDTO;
+import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.request.CreateOrderRequestDTO;
+import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.response.OrderResponseDTO;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.service.OrderProcessor;
 
 import java.util.List;
@@ -19,17 +19,17 @@ public class OrderControllerV1 {
     private final OrderProcessor orderProcessor;
 
     @PostMapping
-    public OrderResponseDTO create(@RequestBody CreateOrderRequestDTO order) {
-        return orderProcessor.create(order);
+    public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody CreateOrderRequestDTO order) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderProcessor.create(order));
     }
 
     @GetMapping("/{id}")
-    public OrderEntity getOne(@PathVariable UUID id) {
-        return orderProcessor.getOrderOrThrow(id);
+    public ResponseEntity<OrderResponseDTO> getOrderById(@PathVariable UUID id) {
+        return ResponseEntity.ok().body(orderProcessor.getOrderOrThrow(id));
     }
 
-    @GetMapping
-    public ResponseEntity<List<OrderResponseDTO>> getAll() {
-        return ResponseEntity.ok(orderProcessor.getAll());
+    @GetMapping("/client/{id}")
+    public ResponseEntity<List<OrderResponseDTO>> getAllOrdersByClientId(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(orderProcessor.getAllById(id));
     }
 }
