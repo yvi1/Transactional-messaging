@@ -42,7 +42,7 @@ dependencies {
 
 	// additional libs
 	compileOnly("org.mapstruct:mapstruct:${versions["mapstructVersion"]}")
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
 	annotationProcessor("org.mapstruct:mapstruct-processor:${versions["mapstructVersion"]}")
 	annotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 	implementation("org.springframework.boot:spring-boot-starter-validation")

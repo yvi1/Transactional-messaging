@@ -46,7 +46,7 @@ public class OrderProcessor {
         var orderEntity = orderRepository.findById(id)
                 .orElseThrow(() -> {
                     log.error("Entity with id `{}` not found", id);
-                    return new OrderNotFoundException("Order with id=[`%s`] not found".formatted(id));
+                    return new OrderNotFoundException("Order with id=`%s` not found".formatted(id));
                 });
         return orderMapper.toResponseDTO(orderEntity);
     }

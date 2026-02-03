@@ -5,26 +5,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.exception.OrderNotFoundException;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.response.ErrorResponseDTO;
+import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.error.ErrorResponseDTO;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({OrderNotFoundException.class})
     protected ResponseEntity<ErrorResponseDTO> handleOrderNotFoundException(RuntimeException e) {
-        return buildErrorResponse(e, HttpStatus.NOT_FOUND);
+        return buildErrorResponse(e, HttpStatus.NOT_FOUND, "Order not found");
     }
 
     @ExceptionHandler({Exception.class})
-    protected ResponseEntity<ErrorResponseDTO> handleException(RuntimeException e) {
-        return buildErrorResponse(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    protected ResponseEntity<ErrorResponseDTO> handleException(Exception e) {
+        return buildErrorResponse(e, HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
     }
 
-    private ResponseEntity<ErrorResponseDTO> buildErrorResponse(Exception exception, HttpStatus httpStatus) {
+    private ResponseEntity<ErrorResponseDTO> buildErrorResponse(
+        Exception exception,
+        HttpStatus httpStatus,
+        String message
+    ) {
         return new ResponseEntity<>(
                 new ErrorResponseDTO(
-                        exception.getMessage(),
-                        httpStatus.value()),
+                        httpStatus.name(),
+                        httpStatus.value(),
+                        message,
+                        exception.getMessage()),
                 httpStatus);
     }
 }
