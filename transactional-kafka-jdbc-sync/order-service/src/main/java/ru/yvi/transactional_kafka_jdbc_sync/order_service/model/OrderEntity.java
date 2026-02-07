@@ -38,7 +38,7 @@ public class OrderEntity extends BaseEntity {
     private OrderStatus orderStatus;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @Builder.Default
     private Set<CartEntity> cartEntities = new LinkedHashSet<>();
 
