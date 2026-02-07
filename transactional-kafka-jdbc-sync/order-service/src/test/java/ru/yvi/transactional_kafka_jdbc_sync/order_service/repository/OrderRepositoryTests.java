@@ -23,9 +23,6 @@ import static ru.yvi.transactional_kafka_jdbc_sync.order_service.util.DataUtils.
 public class OrderRepositoryTests {
 
     @Autowired
-    private TestEntityManager entityManager;
-
-    @Autowired
     private OrderRepository orderRepository;
 
     @BeforeEach
