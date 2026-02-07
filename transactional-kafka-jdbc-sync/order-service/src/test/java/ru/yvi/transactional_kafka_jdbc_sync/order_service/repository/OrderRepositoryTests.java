@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
-import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderEntity;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderStatus;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.util.DataUtils;
