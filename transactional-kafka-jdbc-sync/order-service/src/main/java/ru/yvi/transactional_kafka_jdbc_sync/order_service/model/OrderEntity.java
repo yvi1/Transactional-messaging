@@ -3,6 +3,7 @@ package ru.yvi.transactional_kafka_jdbc_sync.order_service.model;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import ru.yvi.transactionalkafkajdbcsync.commonlibs.http.order.OrderStatus;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;

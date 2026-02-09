@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.api.OrderAPI;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.request.CreateOrderRequestDTO;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.response.OrderResponseDTO;
+import ru.yvi.transactionalkafkajdbcsync.commonlibs.http.order.request.CreateOrderRequestDTO;
+import ru.yvi.transactionalkafkajdbcsync.commonlibs.http.order.response.OrderResponseDTO;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.service.OrderProcessor;
 
 import java.util.List;

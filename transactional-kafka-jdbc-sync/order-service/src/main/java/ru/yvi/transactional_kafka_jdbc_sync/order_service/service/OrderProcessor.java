@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.exception.OrderNotFoundException;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderEntity;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderStatus;
+import ru.yvi.transactionalkafkajdbcsync.commonlibs.http.order.OrderStatus;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.repository.OrderRepository;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.request.CreateOrderRequestDTO;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.response.OrderResponseDTO;
+import ru.yvi.transactionalkafkajdbcsync.commonlibs.http.order.request.CreateOrderRequestDTO;
+import ru.yvi.transactionalkafkajdbcsync.commonlibs.http.order.response.OrderResponseDTO;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.mapper.OrderMapper;
 
 import java.math.BigDecimal;

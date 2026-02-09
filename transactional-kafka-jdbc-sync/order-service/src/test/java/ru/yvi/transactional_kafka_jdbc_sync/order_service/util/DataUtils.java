@@ -3,7 +3,7 @@ package ru.yvi.transactional_kafka_jdbc_sync.order_service.util;
 import lombok.experimental.UtilityClass;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.CartEntity;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderEntity;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderStatus;
+import ru.yvi.transactionalkafkajdbcsync.commonlibs.http.order.OrderStatus;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

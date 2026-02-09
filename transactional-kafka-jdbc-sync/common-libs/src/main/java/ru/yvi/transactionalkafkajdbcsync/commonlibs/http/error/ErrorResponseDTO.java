@@ -1,10 +1,8 @@
-package ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.error;
+package ru.yvi.transactionalkafkajdbcsync.commonlibs.http.error;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import java.util.List;
 
 public record ErrorResponseDTO(
         @NotEmpty String name,

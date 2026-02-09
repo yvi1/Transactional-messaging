@@ -2,8 +2,8 @@ package ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.mapper;
 
 import org.mapstruct.*;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderEntity;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.request.CreateOrderRequestDTO;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.response.OrderResponseDTO;
+import ru.yvi.transactionalkafkajdbcsync.commonlibs.http.order.request.CreateOrderRequestDTO;
+import ru.yvi.transactionalkafkajdbcsync.commonlibs.http.order.response.OrderResponseDTO;
 
 @Mapper(
         unmappedTargetPolicy = ReportingPolicy.IGNORE,

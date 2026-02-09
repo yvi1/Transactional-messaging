@@ -1,4 +1,4 @@
-package ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.dto.request;
+package ru.yvi.transactionalkafkajdbcsync.commonlibs.http.order.request;
 
 import jakarta.validation.constraints.*;
 

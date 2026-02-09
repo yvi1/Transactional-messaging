@@ -1,4 +1,4 @@
-package ru.yvi.transactional_kafka_jdbc_sync.order_service.model;
+package ru.yvi.transactionalkafkajdbcsync.commonlibs.http.order;
 
 public enum OrderStatus {
     PENDING_PAYMENT,

@@ -8,7 +8,7 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.util.CollectionUtils;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.CartEntity;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderEntity;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderStatus;
+import ru.yvi.transactionalkafkajdbcsync.commonlibs.http.order.OrderStatus;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
