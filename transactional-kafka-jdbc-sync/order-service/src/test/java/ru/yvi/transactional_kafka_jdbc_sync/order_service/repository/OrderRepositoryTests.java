@@ -91,9 +91,9 @@ public class OrderRepositoryTests {
     @DisplayName("Test order not found functionality")
     public void givenOrderIsNotCreated_whenGetById_thenOptionalIsEmpty() {
         //given
-
+        UUID incorrectId = UUID.fromString("de1a887d-c2b8-4476-8cd7-af9bbe653e45");
         //when
-        OrderEntity obtainedOrder = orderRepository.findById(UUID.fromString("de1a887d-c2b8-4476-8cd7-af9bbe653e45")).orElse(null);
+        OrderEntity obtainedOrder = orderRepository.findById(incorrectId).orElse(null);
         //then
         assertThat(obtainedOrder).isNull();
     }
