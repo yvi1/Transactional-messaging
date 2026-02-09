@@ -5,18 +5,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.util.CollectionUtils;
+import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.CartEntity;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderEntity;
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.model.OrderStatus;
-import ru.yvi.transactional_kafka_jdbc_sync.order_service.util.DataUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.yvi.transactional_kafka_jdbc_sync.order_service.util.DataUtils.getOrderOneTransient;
+import static ru.yvi.transactional_kafka_jdbc_sync.order_service.util.DataUtils.*;
 
 @DataJpaTest
 public class OrderRepositoryTests {
@@ -44,14 +45,7 @@ public class OrderRepositoryTests {
     @DisplayName("Test updating order functionality")
     public void givenOrderForUpdate_whenSave_thenOrderInformationChanged() {
         // given
-        var order = DataUtils.getOrderOneTransient();
-        var initialCartItems = new LinkedHashSet<>(
-                Set.of(
-                        DataUtils.getCartItemOneTransient(),
-                        DataUtils.getCartItemTwoTransient()
-                )
-        );
-        order.setCartEntities(initialCartItems);
+        var order = getOrderOneTransient();
         order.setOrderStatus(OrderStatus.PENDING_PAYMENT);
         orderRepository.save(order);
 
@@ -78,5 +72,96 @@ public class OrderRepositoryTests {
 
         assertThat(updatedCartItem.getQuantity()).isEqualTo(3);
         assertThat(updatedCartItem.getPriceAtPurchase()).isEqualTo(new BigDecimal("100.00"));
+    }
+
+    @Test
+    @DisplayName("Test getting order by id functionality")
+    public void givenOrderCreated_whenGetById_thenOrderIsReturned() {
+        // given
+        OrderEntity orderToSave = getOrderOneTransient();
+        orderRepository.save(orderToSave);
+        //when
+        OrderEntity obtainedOrder = orderRepository.findById(orderToSave.getId()).orElse(null);
+        //then
+        assertThat(obtainedOrder).isNotNull();
+        assertThat(obtainedOrder.getCustomerId()).isEqualTo(UUID_CUSTOMER_1);
+    }
+
+    @Test
+    @DisplayName("Test order not found functionality")
+    public void givenOrderIsNotCreated_whenGetById_thenOptionalIsEmpty() {
+        //given
+
+        //when
+        OrderEntity obtainedOrder = orderRepository.findById(UUID.fromString("de1a887d-c2b8-4476-8cd7-af9bbe653e45")).orElse(null);
+        //then
+        assertThat(obtainedOrder).isNull();
+    }
+
+    @Test
+    @DisplayName("Test get all orders functionality")
+    public void givenTwoOrdersAreStored_whenFindAll_thenAllOrdersAreReturned() {
+        //given
+        OrderEntity order1 = getOrderOneTransient();
+        order1.setOrderStatus(OrderStatus.PENDING_PAYMENT);
+
+        OrderEntity order2 = getOrderTwoTransient();
+        order2.setOrderStatus(OrderStatus.PENDING_PAYMENT);
+
+        orderRepository.saveAll(List.of(order1, order2));
+        //when
+        List<OrderEntity> obtainedOrders = orderRepository.findAll();
+        //then
+        assertThat(CollectionUtils.isEmpty(obtainedOrders)).isFalse();
+        assertThat(obtainedOrders).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("Test get all orders by customer id with EntityGraph functionality")
+    public void givenOrdersSaved_whenGetByCustomerId_thenOnlyAllCustomerOrdersAreReturned() {
+        //given
+        OrderEntity order1 = getOrderOneTransient();
+        order1.setOrderStatus(OrderStatus.PENDING_PAYMENT);
+
+        OrderEntity order2 = getOrderTwoTransient();
+        order2.setOrderStatus(OrderStatus.PENDING_PAYMENT);
+
+        OrderEntity order3 = getOrderThreeTransient();
+        order3.setOrderStatus(OrderStatus.PENDING_PAYMENT);
+
+        orderRepository.saveAll(List.of(order1, order2, order3));
+        //when
+        var customerOrderList = orderRepository.findAllByCustomerId(UUID_CUSTOMER_1);
+        //then
+        assertThat(CollectionUtils.isEmpty(customerOrderList)).isFalse();
+        assertThat(customerOrderList).hasSize(2);
+        assertThat(customerOrderList.getFirst().getCartEntities()).extracting(CartEntity::getName)
+                .containsExactlyInAnyOrder("Laptop", "Desktop");
+        assertThat(customerOrderList.getLast().getCartEntities()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Test get orders by customer id, who has no orders")
+    public void givenCustomerIdWithoutOrders_whenGetByCustomerId_thenReturnOrderEmptyList() {
+        // given
+
+        // when
+        List<OrderEntity> orders = orderRepository.findAllByCustomerId(CUSTOMER_ID_WITHOUT_ORDERS);
+
+        // then
+        assertThat(orders).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Test delete an order by id from the database")
+    public void givenOrderIsSaved_whenDeleteById_thenOrderIsRemovedFromDB() {
+        //given
+        OrderEntity order = getOrderOneTransient();
+        orderRepository.save(order);
+        //when
+        orderRepository.deleteById(order.getId());
+        //then
+        OrderEntity obtainedOrder = orderRepository.findById(order.getId()).orElse(null);
+        assertThat(obtainedOrder).isNull();
     }
 }
