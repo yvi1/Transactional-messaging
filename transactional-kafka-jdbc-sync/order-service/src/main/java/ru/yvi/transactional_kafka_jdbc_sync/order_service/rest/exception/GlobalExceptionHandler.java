@@ -1,4 +1,4 @@
-package ru.yvi.transactional_kafka_jdbc_sync.order_service.rest;
+package ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
