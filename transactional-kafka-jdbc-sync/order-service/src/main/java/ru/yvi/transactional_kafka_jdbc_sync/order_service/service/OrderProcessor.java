@@ -28,9 +28,9 @@ public class OrderProcessor {
     private final OrderMapper orderMapper;
 
     @Transactional
-    public OrderResponseDTO create(CreateOrderRequestDTO orderDTO) {
+    public OrderResponseDTO createOrder(CreateOrderRequestDTO orderDTO) {
 
-        log.info("Received order: {}", orderDTO);
+        log.info("Received order to create: {}", orderDTO);
         var entityToSave = orderMapper.toEntity(orderDTO);
 
         calculateTotalAmount(entityToSave);
@@ -42,6 +42,23 @@ public class OrderProcessor {
         return orderMapper.toResponseDTO(saved);
     }
 
+    @Transactional
+    public OrderResponseDTO updateOrder(CreateOrderRequestDTO orderDTO) {
+
+        log.info("Received order to update: {}", orderDTO);
+        var entityToUpdate = orderMapper.toEntity(orderDTO);
+        boolean exists = orderRepository.existsById(entityToUpdate.getId());
+
+        if (!exists) {
+            throw new OrderNotFoundException("Order not found");
+        }
+        OrderEntity saved = orderRepository.save(entityToUpdate);
+        log.info("Updated order: {}", saved);
+
+        return orderMapper.toResponseDTO(saved);
+    }
+
+
     public OrderResponseDTO getOrderOrThrow(UUID id) {
         var orderEntity = orderRepository.findById(id)
                 .orElseThrow(() -> {
@@ -52,10 +69,30 @@ public class OrderProcessor {
     }
 
     public List<OrderResponseDTO> getAllById(UUID customerId) {
+        log.info("Getting all orders of customer id= {}", customerId);
         List<OrderEntity> orderEntityList = orderRepository.findAllByCustomerId(customerId);
         return orderEntityList.stream()
                 .map(orderMapper::toResponseDTO)
                 .toList();
+    }
+
+    @Transactional
+    public void softDeleteById(UUID id) {
+        log.info("Soft-deleting order with id= {}", id);
+        OrderEntity obtainedOrder = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
+        obtainedOrder.setOrderStatus(OrderStatus.CANCELED);
+        log.info("Order status changed to {}", obtainedOrder.getOrderStatus());
+        orderRepository.save(obtainedOrder);
+    }
+
+    @Transactional
+    public void hardDeleteById(UUID id) {
+        log.info("Hard-deleting order with id= {}", id);
+        OrderEntity obtainedOrder = orderRepository.findById(id)
+                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
+        log.info("Hard-deleting order: {}", obtainedOrder);
+        orderRepository.deleteById(obtainedOrder.getId());
     }
 
     private void calculateTotalAmount(OrderEntity entity) {

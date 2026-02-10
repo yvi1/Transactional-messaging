@@ -30,7 +30,7 @@ public class OrderControllerV1 implements OrderAPI {
      */
     @Override
     public ResponseEntity<OrderResponseDTO> createOrder(@Valid @RequestBody CreateOrderRequestDTO order) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderProcessor.create(order));
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderProcessor.createOrder(order));
     }
 
     /**
