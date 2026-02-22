@@ -12,6 +12,8 @@ import ru.yvi.transactional_kafka_jdbc_sync.order_service.repository.OrderReposi
 import ru.yvi.transactional_kafka_jdbc_sync.order_service.rest.mapper.OrderMapper;
 import ru.yvi.transactionalkafkajdbcsync.commonlibs.http.order.response.OrderResponseDTO;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -88,5 +90,125 @@ public class OrderProcessorTests {
         then(orderRepository)
                 .should(never())
                 .save(any(OrderEntity.class));
+    }
+
+    @Test
+    @DisplayName("Test get order by id functionality.")
+    public void givenId_whenGetById_thenOrderIsReturned() {
+        //given
+        var responseDTO = getOrderResponseDTO();
+        var entity = getOrderOnePersistent();
+        UUID fixedUuid = UUID.fromString("bdc5055e-c296-4b7f-818a-293c1e9a4ec0");
+        given(orderRepository.findById(fixedUuid)).willReturn(Optional.of(entity));
+        given(orderMapper.toResponseDTO(entity)).willReturn(responseDTO);
+        //when
+        OrderResponseDTO order = serviceUnderTest.getOrderOrThrow(fixedUuid);
+        //then
+        assertThat(order).isNotNull();
+        assertThat(order).isEqualTo(responseDTO);
+    }
+
+    @Test
+    @DisplayName("Test get order by incorrect id functionality.")
+    public void givenIncorrectId_whenGetById_thenExceptionIsThrown() {
+        //given
+        UUID fixedUuid = UUID.fromString("bdc5055e-c296-4b7f-818a-293c1e9a4ec0");
+
+        given(orderRepository.findById(fixedUuid))
+                .willThrow(OrderNotFoundException.class);
+        //when
+        assertThrows(OrderNotFoundException.class, () -> serviceUnderTest.getOrderOrThrow(fixedUuid));
+        //then
+    }
+
+    @Test
+    @DisplayName("Test get all orders by customer id functionality.")
+    public void givenTwoOrders_whenGetAllById_thenAllCustomerOrdersAreReturned() {
+        //given
+        var orderEntity1 = getOrderOnePersistent();
+        var orderEntity2 = getOrderTwoPersistent();
+
+        var order1 = getOrderResponseDTO();
+        var order2 = getOrderTwoResponseDTO();
+
+        List<OrderEntity> orders = List.of(orderEntity1, orderEntity2);
+        given(orderRepository.findAllByCustomerId(UUID_CUSTOMER_1))
+                .willReturn(orders);
+
+        given(orderMapper.toResponseDTO(orderEntity1)).willReturn(order1);
+        given(orderMapper.toResponseDTO(orderEntity2)).willReturn(order2);
+        //when
+        List<OrderResponseDTO> orderResults = serviceUnderTest.getAllById(UUID_CUSTOMER_1);
+        //then
+        assertThat(orderResults).isNotEmpty();
+        assertThat(orderResults.size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("Test order soft-delete by id functionality.")
+    public void givenId_whenSoftDeleteById_thenRepositorySaveMethodIsCalled() {
+        //given
+        var entity = getOrderOnePersistent();
+        UUID fixedUuid = UUID.fromString("bdc5055e-c296-4b7f-818a-293c1e9a4ec0");
+        given(orderRepository.findById(fixedUuid))
+                .willReturn(Optional.of(entity));
+        //when
+        serviceUnderTest.softDeleteById(fixedUuid);
+        //then
+        then(orderRepository)
+                .should(times(1))
+                .save(any(OrderEntity.class));
+        then(orderRepository)
+                .should(never())
+                .deleteById(fixedUuid);
+    }
+
+    @Test
+    @DisplayName("Test order soft-delete by incorrect id functionality.")
+    public void givenIncorrectId_whenSoftDeleteById_thenExceptionIsThrown() {
+        //given
+        UUID fixedUuid = UUID.randomUUID();
+        given(orderRepository.findById(fixedUuid))
+                .willReturn(Optional.empty());
+        //when
+        assertThrows(OrderNotFoundException.class, () -> serviceUnderTest.softDeleteById(fixedUuid));
+        //then
+        then(orderRepository)
+                .should(never())
+                .save(any(OrderEntity.class));
+    }
+
+    @Test
+    @DisplayName("Test order hard-delete by id functionality")
+    public void givenCorrectId_whenHardDeleteById_thenDeleteRepositoryMethodIsCalled() {
+        //given
+        var entity = getOrderOnePersistent();
+        UUID fixedUuid = UUID.fromString("bdc5055e-c296-4b7f-818a-293c1e9a4ec0");
+        given(orderRepository.findById(fixedUuid))
+                .willReturn(Optional.of(entity));
+        //when
+        serviceUnderTest.hardDeleteById(fixedUuid);
+        //then
+        then(orderRepository)
+                .should(never())
+                .save(any(OrderEntity.class));
+        then(orderRepository)
+                .should(times(1))
+                .deleteById(entity.getId());
+    }
+
+    @Test
+    @DisplayName("Test order hard-delete by incorrect id functionality.")
+    public void givenIncorrectId_whenHardDeleteById_thenExceptionIsThrown() {
+        //given
+        UUID fixedUuid = UUID.fromString("bdc5055e-c296-4b7f-818a-293c1e9a4ec0");
+        given(orderRepository.findById(fixedUuid))
+                .willReturn(Optional.empty());
+        //when
+        assertThrows(OrderNotFoundException.class, () -> serviceUnderTest.hardDeleteById(fixedUuid));
+        //then
+        then(orderRepository)
+                .should(never())
+                .deleteById(fixedUuid);
     }
 }
