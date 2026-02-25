@@ -62,6 +62,44 @@ public interface OrderAPI {
             @Parameter(name = "CreateOrderRequestDTO", description = "Create order request message", required = true) @Valid @RequestBody CreateOrderRequestDTO createOrderRequestDTO
     );
 
+    String PATH_UPDATE_ORDER = "";
+    /**
+     * PUT /api/v1/orders : Update an order
+     *
+     * @param createOrderRequestDTO  (required)
+     * @return Order updated successfully (status code 200)
+     */
+    @Operation(
+            operationId = "updateOrder",
+            summary = "Update an order",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Order updated successfully", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = OrderResponseDTO.class))
+                    }),
+                    @ApiResponse(responseCode = "400", description = "Bad request", content = {
+                            @Content(mediaType = "application/json", examples = {
+                                    @ExampleObject(name = "Invalid input data example", value = """
+                                    {
+                                      "name": "BAD_REQUEST",
+                                      "code": "400",
+                                      "description": "The provided order is invalid",
+                                      "message": "<error message>"
+                                    }
+                                    """)
+                            })
+                    })
+            }
+    )
+    @RequestMapping(
+            method = RequestMethod.PUT,
+            value = OrderAPI.PATH_UPDATE_ORDER,
+            produces = { "application/json" },
+            consumes = "application/json"
+    )
+    ResponseEntity<OrderResponseDTO> updateOrder(
+            @Parameter(name = "CreateOrderRequestDTO", description = "Update order message", required = true) @Valid @RequestBody CreateOrderRequestDTO createOrderRequestDTO
+    );
+
     String PATH_FIND_ALL_BY_CUSTOMER_ID = "/customer/{id}";
     /**
      * GET /api/v1/orders/customer/{id} : Find all orders by customer id

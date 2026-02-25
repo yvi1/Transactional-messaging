@@ -34,6 +34,17 @@ public class OrderControllerV1 implements OrderAPI {
     }
 
     /**
+     * PUT /api/v1/orders : Update an order
+     *
+     * @param createOrderRequestDTO (required)
+     * @return Order updated successfully (status code 200)
+     */
+    @Override
+    public ResponseEntity<OrderResponseDTO> updateOrder(CreateOrderRequestDTO createOrderRequestDTO) {
+        return ResponseEntity.ok(orderProcessor.updateOrder(createOrderRequestDTO));
+    }
+
+    /**
      * GET /api/v1/orders/customer/{id} : Find all orders by customer id
      *
      * @param id (required)
